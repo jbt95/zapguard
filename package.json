@@ -9,6 +9,21 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    },
+    "./adapters/*": {
+      "import": "./dist/adapters/*.js",
+      "require": "./dist/adapters/*.js",
+      "types": "./dist/adapters/*.d.ts"
+    },
+    "./adapters": {
+      "import": "./dist/adapters/index.js",
+      "require": "./dist/adapters/index.js",
+      "types": "./dist/adapters/index.d.ts"
     }
   },
   "scripts": {

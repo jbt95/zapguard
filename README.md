@@ -1,35 +1,37 @@
 # Zapguard
 
-A production-grade, DDD-inspired, hexagonal-architecture Circuit Breaker for Cloudflare Workers (TypeScript).
+A production-grade for Node.js and Cloudflare Workers.
 
 ## Features
 
 - Stateless and stateful circuit breaker implementations
-- **Uses the [Storage web standard](https://developer.mozilla.org/en-US/docs/Web/API/Storage) for persistence**—compatible with Cloudflare KV, R2, or any custom adapter implementing the Storage interface
+- **Pluggable async storage**: compatible with Cloudflare KV, R2, Durable Objects, or any custom adapter implementing the async storage interface
 - Immutability: all state transitions return new state objects, never mutate in place
+- Optimistic concurrency control for distributed state
+- Observability hooks for state changes and errors
 - Thoroughly tested with Vitest
 - Designed for Cloudflare Workers, but portable to other platforms
 
 ## Installation
 
 ```sh
-pnpm install
+pnpm install zapguard
 ```
 
 ## Usage
 
-### Basic Circuit Breaker
+### In-Memory Circuit Breaker
 
 ```typescript
-import { InMemoryCircuitBreaker } from '@/src/circuit-breaker'
-import type { CircuitBreakerOptions } from '@/src/types'
+import { CircuitBreaker } from 'zapguard'
+import type { CircuitBreakerOptions } from 'zapguard'
 
 const options: CircuitBreakerOptions = {
   failureThreshold: 3,
   successThreshold: 2,
   resetTimeoutMs: 5000,
 }
-const breaker = new InMemoryCircuitBreaker(options)
+const breaker = new CircuitBreaker(options)
 
 try {
   breaker.assertCanExecute()
@@ -40,33 +42,35 @@ try {
 }
 ```
 
-### Stateful Circuit Breaker (with pluggable storage)
+### Remote Circuit Breaker (with pluggable async storage)
 
 ```typescript
-import { RemoteCircuitBreaker } from '@/src/stateful-circuit-breaker'
-import type { CircuitBreakerOptions } from '@/src/types'
+import { RemoteCircuitBreaker } from 'zapguard'
+import type { CircuitBreakerOptions, AsyncCircuitBreakerStorage } from 'zapguard'
 
-// Example storage adapter (must implement setItem/get)
-const storage = {
-  async setItem(key: string, value: string) {
-    // e.g., await env.MY_KV.put(key, value)
-  },
-  get(key: string) {
-    // e.g., return await env.MY_KV.get(key)
-    return undefined
-  },
-}
+// Example: Cloudflare KV adapter
+import { CloudflareKVStorage } from 'zapguard/adapters/cloudflare-kv-storage'
+
+// env.MY_KV must be a bound KVNamespace
+const storage: AsyncCircuitBreakerStorage = new CloudflareKVStorage(env.MY_KV)
 
 const options: CircuitBreakerOptions = {
   failureThreshold: 3,
   successThreshold: 2,
   resetTimeoutMs: 5000,
 }
-const breaker = new RemoteCircuitBreaker(options, storage)
+const breaker = new RemoteCircuitBreaker(options, storage, 'my-circuit')
 
-await breaker.save('my-key')
-// or
-breaker.deferSave('my-key')
+// Save state (with optimistic concurrency)
+await breaker.save()
+
+// Load state
+const state = await breaker.load()
+
+// Use as you would the in-memory version
+breaker.assertCanExecute()
+// ...
+breaker.recordSuccess()
 ```
 
 ## Decorator Usage
@@ -76,8 +80,7 @@ breaker.deferSave('my-key')
 You can use the provided `withCircuitBreaker` function to automatically apply circuit breaker logic to any async function:
 
 ```typescript
-import { CircuitBreaker } from '@/src/circuit-breaker'
-import { withCircuitBreaker } from '@/src/decorator'
+import { CircuitBreaker, withCircuitBreaker } from 'zapguard'
 
 const breaker = new CircuitBreaker({
   failureThreshold: 3,
@@ -104,8 +107,7 @@ try {
 With TypeScript's `experimentalDecorators` enabled, you can use the `@CircuitBreakerGuard` decorator to protect class methods:
 
 ```typescript
-import { CircuitBreaker } from '@/src/circuit-breaker'
-import { CircuitBreakerGuard } from '@/src/decorator'
+import { CircuitBreaker, CircuitBreakerGuard } from 'zapguard'
 
 class MyService {
   private breaker = new CircuitBreaker({
@@ -150,23 +152,24 @@ pnpm test
 
 - `src/types.ts` – Shared types and interfaces
 - `src/circuit-breaker.ts` – In-memory circuit breaker (domain logic)
-- `src/stateful-circuit-breaker.ts` – Remote circuit breaker with pluggable storage
+- `src/remote-circuit-breaker.ts` – Remote circuit breaker with pluggable async storage
+- `src/adapters/cloudflare-kv-storage.ts` – Cloudflare KV adapter
 - `src/decorator.ts` – Decorator for applying circuit breaker to functions
 - `src/*.test.ts` – Vitest unit tests
-
-## Design Principles
-
-- **Domain logic is framework-agnostic**: No Cloudflare-specific code in the core logic
-- **Hexagonal architecture**: Ports (interfaces) and adapters (storage, persistence)
-- **Immutability**: All state transitions are pure and replace the state object
-- **Testable and maintainable**: All logic is covered by unit tests
 
 ## Cloudflare Workers Integration
 
 - Use with KV, R2, or Durable Objects for persistence
 - Designed for low-latency, stateless operation
 - All configuration via dependency injection (no globals)
-- Example adapters for Cloudflare storage are easy to implement
+- Example adapters for Cloudflare storage are provided
+
+## Advanced Usage & Troubleshooting
+
+- **Optimistic concurrency**: The remote circuit breaker uses versioning to prevent lost updates in distributed environments. If a version conflict occurs, retry the operation.
+- **Observability hooks**: Pass `onStateChange` and `onError` hooks to log or monitor state transitions and errors.
+- **Custom adapters**: Implement the `AsyncCircuitBreakerStorage` interface for any async storage backend.
+- **Error handling**: All storage operations throw typed errors for robust error handling.
 
 ## License
 
