@@ -1,4 +1,4 @@
-# cf-circuit-breaker
+# Zapguard
 
 A production-grade, DDD-inspired, hexagonal-architecture Circuit Breaker for Cloudflare Workers (TypeScript).
 
