@@ -1,9 +1,9 @@
-import { KVNamespace } from '@cloudflare/workers-types'
 import type {
   AsyncCircuitBreakerStorage,
   CircuitBreakerState,
   VersionedStorageValue,
-} from '../types'
+} from '@/types'
+import { KVNamespace } from '@cloudflare/workers-types'
 
 export class CloudflareKVStorage implements AsyncCircuitBreakerStorage {
   constructor(private kv: KVNamespace) {}

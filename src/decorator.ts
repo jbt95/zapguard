@@ -1,4 +1,4 @@
-import type { CircuitBreaker } from './circuit-breaker'
+import type { CircuitBreaker } from '@/circuit-breaker'
 
 /**
  * Decorator to wrap an async function with circuit breaker logic.

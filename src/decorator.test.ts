@@ -82,7 +82,7 @@ describe('withCircuitBreaker - hooks', () => {
     // Now circuit is open, next call triggers error hook
     await expect(wrapped()).rejects.toThrow('Circuit breaker is open')
     expect(errors.length).toBe(1)
-    expect(errors[0].meta.operation).toBe('assertCanExecute')
+    expect(errors[0]?.meta.operation).toBe('assertCanExecute')
   })
 })
 

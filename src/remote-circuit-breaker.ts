@@ -1,11 +1,11 @@
-import { CircuitBreaker } from './circuit-breaker'
-import { Errors } from './errors'
+import { CircuitBreaker } from '@/circuit-breaker'
+import { Errors } from '@/errors'
 import type {
   AsyncCircuitBreakerStorage,
   CircuitBreakerHooks,
   CircuitBreakerOptions,
   CircuitBreakerState,
-} from './types'
+} from '@/types'
 
 /**
  * A circuit breaker with remote persistence using an async storage adapter.

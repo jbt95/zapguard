@@ -1,13 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { ItemAlreadyExistsError } from './errors/item-already-exists'
-import { StorageOperationError } from './errors/storage-operation-error'
-import { RemoteCircuitBreaker } from './remote-circuit-breaker'
+import { RemoteCircuitBreaker } from '@/remote-circuit-breaker'
 import type {
   AsyncCircuitBreakerStorage,
   CircuitBreakerOptions,
   CircuitBreakerState,
   VersionedStorageValue,
-} from './types'
+} from '@/types'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { Errors } from './errors'
 
 class MockStorage implements AsyncCircuitBreakerStorage {
   private store = new Map<string, VersionedStorageValue>()
@@ -15,7 +14,7 @@ class MockStorage implements AsyncCircuitBreakerStorage {
     const current = this.store.get(key)
     // If version is provided, check for concurrency conflict
     if (version !== undefined && current && current.version !== version) {
-      throw new Error('Concurrency conflict')
+      throw new Errors.ConcurrencyConflictError('Version conflict detected')
     }
     // Generate a new version (simple counter or timestamp for test)
     const newVersion = (Date.now() + Math.random()).toString(36)
@@ -57,7 +56,7 @@ describe('RemoteCircuitBreaker', () => {
 
   it('should throw if safeSave called with existing key', async () => {
     await breaker.save()
-    await expect(breaker.safeSave()).rejects.toThrow(ItemAlreadyExistsError)
+    await expect(breaker.safeSave()).rejects.toThrow(Errors.ItemAlreadyExistsError)
   })
 
   it('should throw StorageOperationError on storage failure', async () => {
@@ -73,8 +72,8 @@ describe('RemoteCircuitBreaker', () => {
       },
     }
     const badBreaker = new RemoteCircuitBreaker(options, badStorage, name)
-    await expect(badBreaker.save()).rejects.toThrow(StorageOperationError)
-    await expect(badBreaker.safeSave()).rejects.toThrow(StorageOperationError)
+    await expect(badBreaker.save()).rejects.toThrow(Errors.StorageOperationError)
+    await expect(badBreaker.safeSave()).rejects.toThrow(Errors.StorageOperationError)
   })
 
   it('should validate loaded state', async () => {

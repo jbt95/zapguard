@@ -1,6 +1,6 @@
+import { CircuitBreaker } from '@/circuit-breaker'
+import type { CircuitBreakerOptions, CircuitBreakerState } from '@/types'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { CircuitBreaker } from './circuit-breaker'
-import type { CircuitBreakerOptions, CircuitBreakerState } from './types'
 
 describe('InMemoryCircuitBreaker', () => {
   const options: CircuitBreakerOptions = {
@@ -101,14 +101,14 @@ describe('InMemoryCircuitBreaker - hooks', () => {
   it('should call onStateChange hook on state transition', () => {
     breaker.recordFailure()
     expect(stateChanges.length).toBe(1)
-    expect(stateChanges[0].prev.status).toBe('CLOSED')
-    expect(stateChanges[0].next.status).toBe('OPEN')
+    expect(stateChanges[0]?.prev.status).toBe('CLOSED')
+    expect(stateChanges[0]?.next.status).toBe('OPEN')
   })
 
   it('should call onError hook on error', () => {
     breaker.recordFailure() // open
     expect(() => breaker.assertCanExecute()).toThrow()
     expect(errors.length).toBe(1)
-    expect(errors[0].operation).toBe('assertCanExecute')
+    expect(errors[0]?.operation).toBe('assertCanExecute')
   })
 })

@@ -4,6 +4,8 @@ export default defineConfig({
   entry: ['src/*.ts', '!src//*.test.ts'],
   publicDir: false,
   clean: true,
+  dts: true, // 👈 TypeScript declaration files
   minify: true,
-  format: ['cjs'], // 👈 Node
+  tsconfig: 'tsconfig.json',
+  format: ['cjs', 'esm'], // 👈 Node
 })

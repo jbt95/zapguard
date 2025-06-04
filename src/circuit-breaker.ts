@@ -1,4 +1,4 @@
-import type { CircuitBreakerHooks, CircuitBreakerOptions, CircuitBreakerState } from './types'
+import type { CircuitBreakerHooks, CircuitBreakerOptions, CircuitBreakerState } from '@/types'
 
 /**
  * Implements the core logic for a stateless, in-memory circuit breaker.
