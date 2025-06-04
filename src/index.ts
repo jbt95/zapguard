@@ -1,4 +1,6 @@
+export * from './adapters'
 export * from './circuit-breaker'
 export * from './decorator'
+export * from './errors'
 export * from './remote-circuit-breaker'
 export * from './types'

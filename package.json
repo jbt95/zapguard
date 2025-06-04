@@ -1,29 +1,54 @@
 {
   "name": "zapguard",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "A circuit breaker implementation for Node.js",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./*": {
-      "import": "./dist/*.js",
-      "require": "./dist/*.js",
-      "types": "./dist/*.d.ts"
+      "import": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "require": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.cjs"
+      }
     },
     "./adapters/*": {
-      "import": "./dist/adapters/*.js",
-      "require": "./dist/adapters/*.js",
-      "types": "./dist/adapters/*.d.ts"
+      "import": {
+        "types": "./dist/adapters/*.d.ts",
+        "default": "./dist/adapters/*.js"
+      },
+      "require": {
+        "types": "./dist/adapters/*.d.ts",
+        "default": "./dist/adapters/*.cjs"
+      }
     },
     "./adapters": {
-      "import": "./dist/adapters/index.js",
-      "require": "./dist/adapters/index.js",
-      "types": "./dist/adapters/index.d.ts"
+      "import": {
+        "default": "./dist/adapters/index.js",
+        "types": "./dist/adapters/index.d.ts"
+      },
+      "require": {
+        "default": "./dist/adapters/index.js",
+        "types": "./dist/adapters/index.d.ts"
+      }
     }
   },
   "scripts": {
