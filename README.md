@@ -23,8 +23,7 @@ pnpm install zapguard
 ### In-Memory Circuit Breaker
 
 ```typescript
-import { CircuitBreaker } from 'zapguard'
-import type { CircuitBreakerOptions } from 'zapguard'
+import { CircuitBreaker, CircuitBreakerOptions } from 'zapguard'
 
 const options: CircuitBreakerOptions = {
   failureThreshold: 3,
@@ -45,11 +44,7 @@ try {
 ### Remote Circuit Breaker (with pluggable async storage)
 
 ```typescript
-import { RemoteCircuitBreaker } from 'zapguard'
-import type { CircuitBreakerOptions, AsyncCircuitBreakerStorage } from 'zapguard'
-
-// Example: Cloudflare KV adapter
-import { CloudflareKVStorage } from 'zapguard/adapters/cloudflare-kv-storage'
+import { RemoteCircuitBreaker, CloudflareKVStorage, CircuitBreakerOptions, AsyncCircuitBreakerStorage } from 'zapguard'
 
 // env.MY_KV must be a bound KVNamespace
 const storage: AsyncCircuitBreakerStorage = new CloudflareKVStorage(env.MY_KV)
