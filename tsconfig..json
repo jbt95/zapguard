@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "noUncheckedIndexedAccess": true,
+    "lib": ["ESNext"],
+    "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
