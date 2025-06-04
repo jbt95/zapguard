@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      zapguard:
+        specifier: ^1.1.0
+        version: 1.1.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -1208,6 +1212,9 @@ packages:
     resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
     engines: {node: '>=12.20'}
 
+  zapguard@1.1.0:
+    resolution: {integrity: sha512-oBlcDseTI2GFr0t70lNnRbLcH/EzOQkRO72au8ko+QBrJa7D2HSXOaEoX44ZzGrvGe0BV1oOSVh7bnQscf5f7A==}
+
 snapshots:
 
   '@ampproject/remapping@2.3.0':
@@ -2213,3 +2220,5 @@ snapshots:
   wrappy@1.0.2: {}
 
   yocto-queue@1.2.1: {}
+
+  zapguard@1.1.0: {}

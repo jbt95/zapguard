@@ -1,6 +1,6 @@
 {
   "name": "zapguard",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A circuit breaker implementation for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,9 +34,7 @@
     "test": "vitest run",
     "format:fix": "biome format --write",
     "bundle": "tsup",
-    "prepack": "yarn test:coverage && yarn build",
-		"postpack": "yarn tsc --build --clean",
-    "upload": "pnpm run bundle && pnpm publish --no-git-checks --access public"
+    "upload": "pnpm test:coverage && pnpm bundle && pnpm publish --no-git-checks --access public"
   },
   "keywords": [],
   "author": "jbt95 <jordi.dev95@gmail.com>",
